@@ -10,12 +10,18 @@ public class FileSystem {
 
     // TODO
     public FileSystem() {
-
+        nameMap = new MyHashMap<String, ArrayList<FileData>>();
+        dateMap = new MyHashMap<String, ArrayList<FileData>>();
     }
 
     // TODO
     public FileSystem(String inputFile) {
         // Add your code here
+        nameMap = new MyHashMap<String, ArrayList<FileData>>();
+        dateMap = new MyHashMap<String, ArrayList<FileData>>();
+        
+
+
         try {
             File f = new File(inputFile);
             Scanner sc = new Scanner(f);
