@@ -16,4 +16,8 @@ public class FileData {
     	return "{Name: " +name+ ", Directory: " +dir+ ", Modified Date: " +lastModifiedDate+ "}";
 
     }
+    
+    public boolean equals(FileData other) {
+    	return this.name.equals(other.name) && this.dir.equals(other.dir) && this.lastModifiedDate.equals(other.lastModifiedDate);
+    }
 }

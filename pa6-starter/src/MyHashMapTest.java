@@ -21,13 +21,13 @@ public class MyHashMapTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testPut_nullKey() {
-		System.out.println("Testing Null Key:");
+		System.err.println("Testing Null Key:");
 		testMap.put(null, TEST_VAL);
 	}
 
 	@Test
 	public void testKeys_nonEmptyMap() {
-		System.out.println("Testing Nonempty Map");
+		System.err.println("Testing Nonempty Map");
 		// You don't have to use array list
 		// This test will work with any object that implements List
 		List<String> expectedKeys = new ArrayList<>(5);
@@ -46,7 +46,7 @@ public class MyHashMapTest {
 
 	@Test
 	public void testPutTemplate() {
-		System.out.println("Testing putTemplate");
+		System.err.println("Testing putTemplate");
 		testMap.put(TEST_KEY, TEST_VAL);
 	}
 
@@ -54,39 +54,39 @@ public class MyHashMapTest {
 	
 	
 	
-	//test works but fails autograder
+	//test works but throws exception in autograder
 	@Test
 	public void testGetEmpty() {
-		System.out.println("Testing GetEmpty");
+		System.err.println("Testing GetEmpty");
 		assertNull(testMap.get(TEST_KEY));
 	}
 	
 	
-	//test works but fails autograder?????
+	//test works but throws exception in autograder?????
 	@Test
 	public void testPutSize() {
-		System.out.println("Testing PutSize");
+		System.err.println("Testing PutSize");
 		testMap.put(TEST_KEY, TEST_VAL);
 		assertEquals(1,testMap.size());
 	}
 	
 	
-	//test passes but fails autograder
+	//test passes but throws exception in autograder
 	@Test
 	public void testPutDuplicate() {
-		System.out.println("Testing PutDuplicate");
+		System.err.println("Testing PutDuplicate");
 		testMap.put(TEST_KEY, TEST_VAL);
 		assertFalse(testMap.put(TEST_KEY, TEST_VAL));
-		// System.out.println("FAILURE ");
-		// System.out.println(testMap.keys());
+		// System.err.println("FAILURE ");
+		// System.err.println(testMap.keys());
 
 	}
 
 	
-	//test passes but fails autograder
+	//test passes but throws exception inautograder
 	@Test
 	public void testPutGetNull() {
-		System.out.println("Testing PutGetNull");
+		System.err.println("Testing PutGetNull");
 		testMap.put(TEST_KEY, null);
 		assertNull(testMap.get(TEST_KEY));
 	}
@@ -95,20 +95,34 @@ public class MyHashMapTest {
 	/////// contains key tests ///////////
 	
 	
-	//fails autograder
+	//throws exception in autograder
 	@Test
 	public void testHasKey() {
-		System.out.println("Testing HasKey");
+		System.err.println("Testing HasKey");
 		testMap.put(TEST_KEY, TEST_VAL);
 		assertTrue(testMap.containsKey(TEST_KEY));
 	}
 	
 	
-	//fails in autograder
+	//throws exception in autograder
 	@Test
 	public void testNoKey() {
-		System.out.println("Testing NoKey");
+		System.err.println("Testing NoKey");
 		assertFalse(testMap.containsKey(TEST_KEY));
+	}
+	
+	
+	@Test
+	public void testReHashWithCap() {
+		System.err.println("Testing ReHashWIthCap");
+		mapWithCap.put(TEST_KEY +1, TEST_VAL);
+		mapWithCap.put(TEST_KEY +2, TEST_VAL);
+		mapWithCap.put(TEST_KEY +3, TEST_VAL);
+		
+		//should rehash here and not crash
+		mapWithCap.put(TEST_KEY +4, TEST_VAL);
+		mapWithCap.put(TEST_KEY +5, TEST_VAL);
+		assertEquals(5, mapWithCap.size());
 	}
 	
 	

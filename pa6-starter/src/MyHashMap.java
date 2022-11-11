@@ -234,11 +234,11 @@ public class MyHashMap<K, V> implements DefaultMap<K, V> {
 		int index = hashKey(key);
 
 		// search for key, and terminate if you found it 
-		for (int i = 0; i < buckets[index].size(); i++) {
-			if(buckets[index].get(i).getKey().equals(key)) {
+		for(HashMapEntry<K,V> e : buckets[index]) {
+			if(e.getKey().equals(key))
 				return true;
-			}
 		}
+		
 		return false;
 	}
 
@@ -282,6 +282,9 @@ public class MyHashMap<K, V> implements DefaultMap<K, V> {
 				newBuckets[newHash].add(entry);
 			}
 		}
+		buckets = newBuckets;
+		
+		System.err.println("| Capacity: " + this.capacity + "| size: " + this.size + "| real size: " + buckets.length);
 	}
 
 	private static class HashMapEntry<K, V> implements DefaultMap.Entry<K, V> {
