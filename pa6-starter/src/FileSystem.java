@@ -7,27 +7,23 @@ import java.util.Scanner;
 
 public class FileSystem {
 
-	MyHashMap<String, ArrayList<FileData>> nameMap;
-	MyHashMap<String, ArrayList<FileData>> dateMap;
+	public MyHashMap<String, ArrayList<FileData>> nameMap;
+	public MyHashMap<String, ArrayList<FileData>> dateMap;
 
 	public FileSystem() {
 		nameMap = new MyHashMap<String, ArrayList<FileData>>();
 		dateMap = new MyHashMap<String, ArrayList<FileData>>();
 	}
-
-	// TODO
 	public FileSystem(String inputFile) {
 		nameMap = new MyHashMap<String, ArrayList<FileData>>();
 		dateMap = new MyHashMap<String, ArrayList<FileData>>();
-		// STILL NEED TODO HERE FINISH OTHER METHODS FIRST
-//////////////////////////////////////////////////////
 
 		try {
 			File f = new File(inputFile);
 			Scanner sc = new Scanner(f);
 			while (sc.hasNextLine()) {
 				String[] data = sc.nextLine().split(", ");
-				System.out.println(Arrays.toString(data));
+				//System.out.println(Arrays.toString(data));
 				add(data[0], data[1], data[2]);
 			}
 			sc.close();
@@ -58,6 +54,12 @@ public class FileSystem {
 		} // otherwise, just add it to the list (hope that pointers work the way you
 			// thought)
 		else {
+			for(FileData e : l){
+				if(e.similar(entry) || e.equals(entry)){
+					l.remove(e);
+					break;
+				}
+			}
 			l.add(entry);
 		}
 
@@ -68,10 +70,16 @@ public class FileSystem {
 		if (l2 == null) {
 			l2 = new ArrayList<FileData>();
 			l2.add(entry);
-			nameMap.put(fileName, l2);
+			dateMap.put(modifiedDate, l2);
 		} // otherwise, just add it to the list (hope that pointers work the way you
 			// thought)
 		else {
+			for(FileData e : l2){
+				if(e.similar(entry) || e.equals(entry)){
+					l2.remove(e);
+					break;
+				}
+			}
 			l2.add(entry);
 		}
 
@@ -120,7 +128,7 @@ public class FileSystem {
 
 	//
 	public ArrayList<FileData> findFilesByDate(String modifiedDate) {
-		ArrayList<FileData> l = nameMap.get(modifiedDate);
+		ArrayList<FileData> l = dateMap.get(modifiedDate);
 		if (l != null) {
 			return l;
 		} else {
@@ -131,21 +139,26 @@ public class FileSystem {
 	// TODO
 	public ArrayList<FileData> findFilesInMultDir(String modifiedDate) {
 		ArrayList<FileData> l = dateMap.get(modifiedDate);
+		ArrayList<FileData> output = new ArrayList<>();
 		for (FileData e : l) {
-			for (FileData e2 : l) {
-				if (!e.equals(e2)) {
-					return l;
+			ArrayList<FileData> nList = findFilesByName(e.name);
+			for(FileData nEntry: nList){
+				//if the names are the same, but the directory is different
+				if((e.name.equals(nEntry.name)) && (!e.dir.equals(nEntry.dir))){
+					output.add(e); 
+					break; //only breaks the inner loop
 				}
 			}
-
 		}
-		return new ArrayList<FileData>();
+		return output;
 	}
 
-	// TODO
 	// should also remove the files from the dateMap
 	public boolean removeByName(String name) {
 		ArrayList<FileData> names = nameMap.get(name);
+		if(names == null){
+			return false;
+		}
 		ArrayList<String> dates = new ArrayList<String>();
 		for (FileData e : names) {
 			dates.add(e.lastModifiedDate);
@@ -172,32 +185,31 @@ public class FileSystem {
 	public boolean removeFile(String name, String directory) {
 
 		FileData toRemove = null;
-		ArrayList<FileData> nList = nameMap.get(name);
-		for (int i = 0; i < nList.size(); i++) {
-			FileData e = nList.get(i);
-			if (e.name.equals(name) && e.dir.equals(directory)) {
+		ArrayList<FileData> l = nameMap.get(name);
+		if(l == null){
+			return false;
+		}
+		for(FileData e: l){
+			if(e.similar(new FileData(name, directory, ""))){
 				toRemove = e;
-				nList.remove(i);
+				l.remove(e);
 				break;
 			}
 		}
+		
 		if (toRemove == null) {
 			return false;
 		}
 
-		nList = dateMap.get(toRemove.lastModifiedDate);
+		l = dateMap.get(toRemove.lastModifiedDate);
 
-		for (int i = 0; i < nList.size(); i++) {
-			FileData e = nList.get(i);
-			if (e.name.equals(name) && e.dir.equals(directory)) {
-				toRemove = e;
-				nList.remove(i);
-				return true;
+		for(FileData e: l){
+			if(e.equals(toRemove)){
+				l.remove(e);
+				break;
 			}
 		}
-
-		return false;
-
+		return true;
 	}
 
 }
